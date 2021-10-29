@@ -20,7 +20,6 @@ def skills_checker(data, candidate_or_job):
 
 def recruiter_checker(recruiter):
     recruiters = Recruiter.objects.all()
-    searching_recruiter = None
     if not recruiters.filter(email=recruiter['email']).exists():
         new_recruiter = Recruiter.objects.create(**recruiter)
         new_recruiter.save()
@@ -71,8 +70,6 @@ class CandidatesViewSet(viewsets.ModelViewSet):
         candidate = self.get_object()
         candidate.skills.clear()
         skills_checker(data, candidate)
-        c = candidate.recruiter.email
-        b = data['recruiter']['email']
         if candidate.recruiter.email != data['recruiter']['email']:
             recruiter = Recruiter.objects.get(email=candidate.recruiter.email)
             recruiter.level -= 1
