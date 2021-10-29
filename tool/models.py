@@ -12,23 +12,25 @@ class Skills(models.Model):
         return self.name
 
 
+class Recruiter(models.Model):
+    last_name = models.CharField(max_length=25)
+    email = models.EmailField(unique=True)
+    country = models.CharField(max_length=50)
+    level = models.PositiveIntegerField(default=1)
+    interviews = models.PositiveIntegerField(default=0)
+
+
 class Candidate(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     bio = models.TextField()
     birth_date = models.DateField()
     skills = models.ManyToManyField(Skills)
-    recruiter = models.CharField(max_length=10)
+    recruiter = models.ForeignKey(Recruiter, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.email
-
-
-class Recruiter(models.Model):
-    username = models.CharField(max_length=10, unique=True)
-    level = models.PositiveIntegerField(default=1)
-    interviews = models.PositiveIntegerField(default=0)
 
 
 class Job(models.Model):

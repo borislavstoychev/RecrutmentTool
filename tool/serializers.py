@@ -14,7 +14,7 @@ class SkillsSerializer(serializers.ModelSerializer):
 class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Candidate
-        fields = "__all__"
+        exclude = ('recruiter', )
         depth = 1
 
 

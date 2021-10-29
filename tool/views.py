@@ -20,19 +20,23 @@ def skills_checker(data, candidate_or_job):
 
 def recruiter_checker(recruiter):
     recruiters = Recruiter.objects.all()
-    if not recruiters.filter(username=recruiter).exists():
-        new_recruiter = Recruiter(username=recruiter)
+    searching_recruiter = None
+    if not recruiters.filter(email=recruiter['email']).exists():
+        new_recruiter = Recruiter.objects.create(**recruiter)
         new_recruiter.save()
+        searching_recruiter = new_recruiter
     else:
-        rec = recruiters.get(username=recruiter)
+        rec = recruiters.get(email=recruiter['email'])
         rec.level += 1
         rec.save()
+        searching_recruiter = rec
+    return searching_recruiter
 
 
 def create_interview(job):
     candidates = set(Candidate.objects.filter(skills__in=job.skills.all()))
     for candidate in candidates:
-        recruiter = Recruiter.objects.get(username=candidate.recruiter)
+        recruiter = Recruiter.objects.get(email=candidate.recruiter.email)
         if recruiter.interviews < 5:
             recruiter.interviews += 1
             recruiter.level += 1
@@ -48,18 +52,18 @@ class CandidatesViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = request.data
+        recruiter = recruiter_checker(data['recruiter'])
         new_candidate = Candidate.objects.create(first_name=data['first_name'],
                                                  last_name=data['last_name'],
                                                  email=data['email'],
                                                  bio=data['bio'],
                                                  birth_date=data['birth_date'],
-                                                 recruiter=data['recruiter'],
+                                                 recruiter=recruiter
                                                  )
         new_candidate.save()
         skills_checker(data, new_candidate)
         serializer = CandidateSerializer(new_candidate)
         headers = self.get_success_headers(serializer.data)
-        recruiter_checker(serializer.data['recruiter'])
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
@@ -67,11 +71,15 @@ class CandidatesViewSet(viewsets.ModelViewSet):
         candidate = self.get_object()
         candidate.skills.clear()
         skills_checker(data, candidate)
-        if candidate.recruiter != data['recruiter']:
-            recruiter = Recruiter.objects.get(username=candidate.recruiter)
+        c = candidate.recruiter.email
+        b = data['recruiter']['email']
+        if candidate.recruiter.email != data['recruiter']['email']:
+            recruiter = Recruiter.objects.get(email=candidate.recruiter.email)
             recruiter.level -= 1
             recruiter.save()
-            recruiter_checker(data['recruiter'])
+            new_recruiter = recruiter_checker(data['recruiter'])
+            candidate.recruiter = new_recruiter
+            candidate.save()
         return super().update(request)
 
 
