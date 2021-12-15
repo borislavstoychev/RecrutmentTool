@@ -1,6 +1,4 @@
-from django.contrib.postgres.fields import ArrayField
 from rest_framework import serializers
-from rest_framework.fields import DictField, CharField
 
 from tool.models import Candidate, Job, Skills, Recruiter, Interview
 
@@ -14,7 +12,15 @@ class SkillsSerializer(serializers.ModelSerializer):
 class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Candidate
-        exclude = ('recruiter', )
+        fields = (
+            'first_name', 
+            'last_name', 
+            'email', 
+            'bio', 
+            'birth_date', 
+            'skills', 
+            'recruiter',
+            )
         depth = 1
 
 
