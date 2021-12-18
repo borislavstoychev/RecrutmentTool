@@ -21,7 +21,7 @@
 ## Create recruiter  <a class="anchor" id="section_1_2"></a>
 ***Each candidate  have ONE recruiter, which is created AUTOMATICALLY by creating a candidate. Each recruiter have 5 free interview slots for conducting interviews and an experience level, starting from 1. When adding a new candidate, we check if his recruiter exists. If it exists, we  increment its level with one, otherwise we create a new one.***
 ## Create job  <a class="anchor" id="section_1_3"></a>
-***Each job has skills on the basis of which we can look for a candidate. When we create a job, an interview with a suitable candidate was created AUTOMATICALLY. A suitable candidate is one who has at least one skill required by the job. If there is more than one suitable candidate, then create interviews for everyone. Every candidate has only one recruiter and that recruiter has only five free slots. When we create an interview, we  find the recruiter who is responsible for the candidate and increase his experience level by one.***
+***Each job has skills on the basis of which we can look for a candidate. When we create a job, an interview with a suitable candidate was created AUTOMATICALLY. A suitable candidate is one who has at least one skill required by the job. If there is more than one suitable candidate, then we create interviews for everyone. Every candidate has only one recruiter and that recruiter has only five free slots. When we create an interview, we  find the recruiter who is responsible for the candidate and increase his experience level by one.***
 ## Remove  job  <a class="anchor" id="section_1_4"></a>
 ***When we remove a particular job, we delete all interviews for this job, as well as free up the slots of the recruiters responsible for this.***
 
